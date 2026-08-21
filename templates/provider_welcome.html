@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Live ka na! — PaBook{% endblock %}
+{% block content %}
+<div style="padding:60px 24px;text-align:center;">
+  <div style="font-size:48px;margin-bottom:16px;">🎉</div>
+  <p style="font-family:'Fraunces',serif;font-weight:700;font-size:20px;margin:0 0 8px;">Live ka na!</p>
+  <p style="font-size:13px;color:#8B8368;margin:0 0 24px;">
+    <b>{{ provider.business_name }}</b> ay makikita na ngayon sa search.<br>
+    May <b style="color:#C24A3B;">15-day free trial</b> ka — walang bayad muna.
+  </p>
+
+  <div style="background:#fff;border:1px solid #D9CFB8;border-radius:14px;padding:20px;margin-bottom:20px;">
+    <p style="font-size:11px;color:#8B8368;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin:0 0 8px;">Access Code Mo</p>
+    <p style="font-family:'Fraunces',serif;font-weight:900;font-size:32px;letter-spacing:.1em;color:#0F3D3E;margin:0 0 8px;">{{ provider.access_code }}</p>
+    <p style="font-size:11px;color:#8B8368;margin:0;">I-save mo ito! Kailangan mo ito para makapasok sa dashboard mo at makita ang mga booking.</p>
+  </div>
+
+  <a href="{{ url_for('provider_dashboard', provider_id=provider.id) }}" class="btn btn-dark">Pumunta sa Dashboard</a>
+</div>
+{% endblock %}

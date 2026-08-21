@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Mag-subscribe — PaBook{% endblock %}
+{% block content %}
+<div style="padding:50px 24px;text-align:center;">
+  <div style="font-size:40px;margin-bottom:12px;">⏰</div>
+  <p style="font-family:'Fraunces',serif;font-weight:700;font-size:19px;margin:0 0 8px;">Tapos na ang trial mo</p>
+  <p style="font-size:13px;color:#8B8368;margin:0 0 24px;line-height:1.6;">
+    Ang 15-day free trial ni <b>{{ provider.business_name }}</b> ay natapos na.
+    Hindi ka na makikita sa search at hindi mo pa makikita ang mga bagong booking
+    hanggang mag-subscribe ka.
+  </p>
+
+  <div style="background:#fff;border:2px solid #C24A3B;border-radius:14px;padding:20px;margin-bottom:16px;text-align:left;">
+    <p style="font-family:'Fraunces',serif;font-weight:700;font-size:16px;margin:0 0 4px;color:#0F3D3E;">{{ provider.tier_info().label }}</p>
+    <p style="font-size:20px;font-weight:700;color:#C24A3B;margin:0 0 4px;">₱{{ provider.tier_info().monthly_fee }}<span style="font-size:12px;color:#8B8368;">/buwan</span></p>
+    <p style="font-size:11px;color:#8B8368;margin:0;">Babayaran via GCash — makikita mo agad ang mga bagong booking pagkatapos kumpirmahin ang bayad.</p>
+  </div>
+
+  <a href="https://m.me/YOUR_PAGE_HERE" class="btn btn-primary">I-message kami para mag-subscribe</a>
+
+  <p style="font-size:11px;color:#8B8368;margin-top:20px;">
+    <a href="{{ url_for('provider_dashboard', provider_id=provider.id, unlocked=unlocked) }}" style="color:#8B8368;">I-refresh ang page</a>
+    kung nakapag-bayad ka na.
+  </p>
+</div>
+{% endblock %}
