@@ -1,21 +1,54 @@
-{% extends "base.html" %} {% block title %}PaBook — Home{% endblock %} {% block content %}
-📍 PaBook
-🏠
-Lahat {% for key, label, icon in categories %}
-{{ icon }}
-{{ label.split(' ')[0] }} {% endfor %}
-{% if results %}Malapit sa 'yo · {{ results|length }} nakita{% else %}Wala pang lumabas{% endif %}
+{% extends "base.html" %}
+{% block title %}PaBook — Home{% endblock %}
+{% block content %}
+<div class="topbar">
+  <div class="brand">📍 PaBook</div>
+</div>
+
+<div class="cats">
+  <a href="{{ url_for('home') }}" class="cat {{ 'active' if not selected_category else '' }}">
+    <div class="ic">🏠</div>Lahat
+  </a>
+  {% for key, label, icon in categories %}
+  <a href="{{ url_for('home', category=key) }}" class="cat {{ 'active' if selected_category==key else '' }} {{ 'alt' if loop.index is even else '' }}">
+    <div class="ic">{{ icon }}</div>{{ label.split(' ')[0] }}
+  </a>
+  {% endfor %}
+</div>
+
+<div class="section-label">
+  {% if results %}Malapit sa 'yo · {{ results|length }} nakita{% else %}Wala pang lumabas{% endif %}
+</div>
+
 {% if not results %}
-Wala pang naka-register na provider {{ 'sa category na ito' if selected_category else '' }}.
-I-setup ang negosyo mo →
-{% endif %} {% for provider, distance in results %} {% set label, icon = provider.category_label() %}
-{{ icon }}
-{{ provider.business_name }} {% if provider.tier_info().featured %}FEATURED{% endif %}
+<div class="empty">
+  Wala pang naka-register na provider {{ 'sa category na ito' if selected_category else '' }}.<br>
+  <a href="{{ url_for('provider_setup') }}" style="color:var(--red);font-weight:700;">I-setup ang negosyo mo →</a>
+</div>
+{% endif %}
 
-⭐ {{ provider.rating }} · {{ distance }}km · {{ provider.barangay }}
-
-{{ label }}
-{% if provider.quote_only %}Get quote{% else %} {% set prices = provider.services | selectattr('price') | map(attribute='price') | list %} {% if prices %}₱{{ prices | min | int }}+{% else %}—{% endif %} {% endif %}
+{% for provider, distance in results %}
+{% set label, icon = provider.category_label() %}
+<a class="provider-card" href="{{ url_for('provider_profile', provider_id=provider.id) }}">
+  <div class="avatar">{{ icon }}</div>
+  <div>
+    <p class="p-name">{{ provider.business_name }}
+      {% if provider.tier_info().featured %}<span class="badge-featured">FEATURED</span>{% endif %}
+    </p>
+    <p class="p-meta">⭐ {{ provider.rating }} · {{ distance }}km · {{ provider.barangay }}</p>
+    <span class="tag">{{ label }}</span>
+  </div>
+  <div class="p-price">
+    {% if provider.quote_only %}Get quote{% else %}
+      {% set prices = provider.services | selectattr('price') | map(attribute='price') | list %}
+      {% if prices %}₱{{ prices | min | int }}+{% else %}—{% endif %}
+    {% endif %}
+  </div>
+</a>
 {% endfor %}
-May negosyo ka? I-list dito →
+
+<div style="padding:20px 18px 4px;text-align:center;">
+  <a href="{{ url_for('provider_setup') }}" style="font-size:11px;color:#8B8368;">May negosyo ka? <b style="color:var(--teal-deep);">I-list dito →</b></a>
+</div>
 {% endblock %}
+
