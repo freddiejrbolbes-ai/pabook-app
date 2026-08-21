@@ -51,6 +51,9 @@
       <input type="number" name="service_price[]" placeholder="₱" style="flex:1;">
     </div>
   </div>
+  <div style="margin:0 18px 8px;">
+    <button type="button" id="addServiceBtn" class="btn btn-secondary" style="padding:9px 0;font-size:12px;">+ Magdagdag ng Serbisyo</button>
+  </div>
   <div class="hint" style="margin:0 18px 8px;">Iwanang blangko kung wala ka nang idadagdag.</div>
 
   <div class="section-label">Lokasyon</div>
@@ -87,10 +90,11 @@
   </div>
 
   <div class="section-label">Package</div>
+  <div class="hint" style="margin:0 18px 8px;">🎁 15-day free trial sa lahat ng package — walang bayad ngayon.</div>
   <div class="field">
     <select name="package_tier">
       {% for key, info in tiers.items() %}
-      <option value="{{ key }}">{{ info.label }} — ₱{{ info.setup_fee }} setup + ₱{{ info.monthly_fee }}/month</option>
+      <option value="{{ key }}" {{ 'selected' if key == preselected_package else '' }}>{{ info.label }} — Libre 15 araw, tapos ₱{{ info.setup_fee }} setup + ₱{{ info.monthly_fee }}/buwan</option>
       {% endfor %}
     </select>
   </div>
@@ -99,4 +103,22 @@
     <button type="submit" class="btn btn-primary">I-publish ang Profile</button>
   </div>
 </form>
+
+<script>
+  document.getElementById('addServiceBtn').addEventListener('click', function () {
+    const list = document.getElementById('servicesList');
+    const row = document.createElement('div');
+    row.className = 'field';
+    row.style = 'display:flex;gap:8px;margin:0 18px 10px;align-items:center;';
+    row.innerHTML = `
+      <input type="text" name="service_name[]" placeholder="Isa pang serbisyo" style="flex:2;">
+      <input type="number" name="service_price[]" placeholder="₱" style="flex:1;">
+      <span class="removeServiceRow" style="cursor:pointer;color:#C24A3B;font-size:18px;font-weight:700;padding:0 4px;">×</span>
+    `;
+    list.appendChild(row);
+    row.querySelector('.removeServiceRow').addEventListener('click', function () {
+      row.remove();
+    });
+  });
+</script>
 {% endblock %}
