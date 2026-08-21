@@ -1,5 +1,17 @@
 {% extends "base.html" %}
 {% block title %}PaBook — Home{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  #providerMap { height: 220px; border-radius: 12px; margin: 0 18px 12px; overflow: hidden; }
+  .loc-status { margin: 0 18px 8px; font-size: 11px; color: #8B8368; display: flex; align-items: center; gap: 6px; }
+  .loc-status a { color: var(--teal-deep); font-weight: 700; }
+  .map-toggle { margin: 0 18px 10px; display: flex; gap: 8px; }
+  .map-toggle-btn { flex: 1; text-align: center; font-size: 11px; font-weight: 700; padding: 8px 0; border-radius: 8px; border: 1px solid var(--line); background: #fff; color: var(--teal-deep); cursor: pointer; }
+  .map-toggle-btn.active { background: var(--teal-deep); color: #fff; border-color: var(--teal-deep); }
+</style>
+{% endblock %}
 {% block content %}
 <div class="topbar">
   <div class="brand">📍 PaBook</div>
@@ -16,14 +28,27 @@
   {% endfor %}
 </div>
 
-<div class="section-label">
+<div class="loc-status" id="locStatus">
+  📍 <span id="locText">{{ 'Ginagamit ang GPS location mo' if using_gps else 'Default na lokasyon (Kapalong)' }}</span>
+  — <a href="#" id="refreshLocBtn">i-detect ulit</a>
+</div>
+
+<div class="map-toggle">
+  <div class="map-toggle-btn active" id="listViewBtn" onclick="showView('list')">📋 Listahan</div>
+  <div class="map-toggle-btn" id="mapViewBtn" onclick="showView('map')">🗺️ Mapa</div>
+</div>
+
+<div id="providerMap" style="display:none;"></div>
+
+<div class="section-label" id="listSectionLabel">
   {% if results %}Malapit sa 'yo · {{ results|length }} nakita{% else %}Wala pang lumabas{% endif %}
 </div>
 
+<div id="listView">
 {% if not results %}
 <div class="empty">
   Wala pang naka-register na provider {{ 'sa category na ito' if selected_category else '' }}.<br>
-  <a href="{{ url_for('provider_setup') }}" style="color:var(--red);font-weight:700;">I-setup ang negosyo mo →</a>
+  <a href="{{ url_for('provider_signup') }}" style="color:var(--red);font-weight:700;">I-setup ang negosyo mo →</a>
 </div>
 {% endif %}
 
@@ -46,9 +71,102 @@
   </div>
 </a>
 {% endfor %}
+</div>
 
 <div style="padding:20px 18px 4px;text-align:center;">
-  <a href="{{ url_for('provider_setup') }}" style="font-size:11px;color:#8B8368;">May negosyo ka? <b style="color:var(--teal-deep);">I-list dito →</b></a>
+  <a href="{{ url_for('provider_signup') }}" style="font-size:11px;color:#8B8368;">May negosyo ka? <b style="color:var(--teal-deep);">I-list dito →</b></a>
 </div>
+
+<script>
+  // ---------- GPS auto-detect ----------
+  function getUrlParam(name) {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(name);
+  }
+
+  function detectLocation() {
+    document.getElementById('locText').textContent = 'Hinahanap ang lokasyon mo...';
+    if (!navigator.geolocation) {
+      document.getElementById('locText').textContent = 'Hindi suportado ng browser mo ang GPS';
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      function (pos) {
+        const params = new URLSearchParams(window.location.search);
+        params.set('lat', pos.coords.latitude);
+        params.set('lng', pos.coords.longitude);
+        window.location.search = params.toString();
+      },
+      function (err) {
+        document.getElementById('locText').textContent = 'Hindi ma-access ang GPS — default na lokasyon na lang';
+      },
+      { timeout: 8000 }
+    );
+  }
+
+  document.getElementById('refreshLocBtn').addEventListener('click', function (e) {
+    e.preventDefault();
+    detectLocation();
+  });
+
+  // Auto-detect once on first visit (no lat/lng in URL yet)
+  if (!getUrlParam('lat') && !sessionStorage.getItem('pabook_loc_asked')) {
+    sessionStorage.setItem('pabook_loc_asked', '1');
+    detectLocation();
+  }
+
+  // ---------- Map view ----------
+  const providers = [
+    {% for provider, distance in results %}
+    {
+      name: {{ provider.business_name | tojson }},
+      lat: {{ provider.latitude }},
+      lng: {{ provider.longitude }},
+      icon: {{ provider.category_label()[1] | tojson }},
+      url: "{{ url_for('provider_profile', provider_id=provider.id) }}"
+    },
+    {% endfor %}
+  ];
+
+  const userLat = {{ user_lat | default('null') }};
+  const userLng = {{ user_lng | default('null') }};
+
+  let map = null;
+
+  function showView(view) {
+    document.getElementById('listView').style.display = view === 'list' ? 'block' : 'none';
+    document.getElementById('listSectionLabel').style.display = view === 'list' ? 'block' : 'none';
+    document.getElementById('providerMap').style.display = view === 'map' ? 'block' : 'none';
+    document.getElementById('listViewBtn').className = 'map-toggle-btn' + (view === 'list' ? ' active' : '');
+    document.getElementById('mapViewBtn').className = 'map-toggle-btn' + (view === 'map' ? ' active' : '');
+
+    if (view === 'map' && !map) {
+      const centerLat = userLat || (providers[0] ? providers[0].lat : 7.5906);
+      const centerLng = userLng || (providers[0] ? providers[0].lng : 125.6772);
+      map = L.map('providerMap').setView([centerLat, centerLng], 12);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+
+      if (userLat && userLng) {
+        L.circleMarker([userLat, userLng], { radius: 8, color: '#C24A3B', fillColor: '#C24A3B', fillOpacity: 0.6 })
+          .addTo(map).bindPopup('Ikaw ang nandito');
+      }
+
+      providers.forEach(function (p) {
+        if (p.lat && p.lng) {
+          L.marker([p.lat, p.lng]).addTo(map)
+            .bindPopup('<b>' + p.icon + ' ' + p.name + '</b><br><a href="' + p.url + '">Tingnan →</a>');
+        }
+      });
+
+      setTimeout(function () { map.invalidateSize(); }, 100);
+    } else if (map) {
+      setTimeout(function () { map.invalidateSize(); }, 100);
+    }
+  }
+</script>
 {% endblock %}
+
+
 
