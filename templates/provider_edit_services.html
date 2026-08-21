@@ -1,1 +1,65 @@
+{% extends "base.html" %}
+{% block title %}I-edit ang Services — {{ provider.business_name }}{% endblock %}
+{% block content %}
+<div class="topbar">
+  <div class="brand">{{ provider.business_name }}</div>
+  <div class="sub">I-edit ang mga serbisyo at presyo</div>
+</div>
+
+{% if not services %}
+<div class="empty" style="margin:16px 18px;">Wala ka pang naka-listang serbisyo. Magdagdag sa ibaba.</div>
+{% endif %}
+
+<form method="POST">
+  <div class="section-label">Kasalukuyang Services</div>
+  <div id="servicesList">
+    {% for s in services %}
+    <div class="field" style="display:flex;gap:8px;margin:0 18px 10px;align-items:center;">
+      <input type="hidden" name="service_id[]" value="{{ s.id }}">
+      <input type="text" name="service_name[]" value="{{ s.name }}" placeholder="Pangalan ng serbisyo" style="flex:2;">
+      <input type="number" name="service_price[]" value="{{ s.price if s.price else '' }}" placeholder="₱ (blangko = quote)" style="flex:1;">
+      <span class="removeServiceRow" style="cursor:pointer;color:#C24A3B;font-size:18px;font-weight:700;padding:0 4px;">×</span>
+    </div>
+    {% endfor %}
+  </div>
+  <div style="margin:0 18px 8px;">
+    <button type="button" id="addServiceBtn" class="btn btn-secondary" style="padding:9px 0;font-size:12px;">+ Magdagdag ng Serbisyo</button>
+  </div>
+  <div class="hint" style="margin:0 18px 14px;">Iwanang blangko ang presyo kung "Get Quote" lang ang gusto mo para dito.</div>
+
+  <div class="cta-fixed">
+    <button type="submit" class="btn btn-primary">I-save ang Changes</button>
+  </div>
+</form>
+
+<div style="padding:12px 18px 4px;text-align:center;">
+  <a href="{{ url_for('provider_dashboard', provider_id=provider.id, unlocked=unlocked) }}" style="font-size:11px;color:#8B8368;">← Balik sa Dashboard</a>
+</div>
+
+<script>
+  document.getElementById('addServiceBtn').addEventListener('click', function () {
+    const list = document.getElementById('servicesList');
+    const row = document.createElement('div');
+    row.className = 'field';
+    row.style = 'display:flex;gap:8px;margin:0 18px 10px;align-items:center;';
+    row.innerHTML = `
+      <input type="hidden" name="service_id[]" value="">
+      <input type="text" name="service_name[]" placeholder="Pangalan ng serbisyo" style="flex:2;">
+      <input type="number" name="service_price[]" placeholder="₱ (blangko = quote)" style="flex:1;">
+      <span class="removeServiceRow" style="cursor:pointer;color:#C24A3B;font-size:18px;font-weight:700;padding:0 4px;">×</span>
+    `;
+    list.appendChild(row);
+    row.querySelector('.removeServiceRow').addEventListener('click', function () {
+      row.remove();
+    });
+  });
+
+  document.querySelectorAll('.removeServiceRow').forEach(function (el) {
+    el.addEventListener('click', function () {
+      el.closest('.field').remove();
+    });
+  });
+</script>
+{% endblock %}
+
 
