@@ -52,8 +52,11 @@ def time_slots(open_str="09:00", close_str="18:00", step_minutes=60):
 @app.route("/")
 def home():
     category = request.args.get("category")
-    lat = request.args.get("lat", type=float) or DEFAULT_LAT
-    lng = request.args.get("lng", type=float) or DEFAULT_LNG
+    raw_lat = request.args.get("lat", type=float)
+    raw_lng = request.args.get("lng", type=float)
+    lat = raw_lat or DEFAULT_LAT
+    lng = raw_lng or DEFAULT_LNG
+    using_gps = raw_lat is not None and raw_lng is not None
 
     query = Provider.query.filter_by(status="active")
     if category:
@@ -73,7 +76,8 @@ def home():
     results.sort(key=lambda pair: (not pair[0].tier_info()["featured"], pair[1] if pair[1] is not None else 999))
 
     return render_template("home.html", categories=CATEGORIES, results=results,
-                            selected_category=category)
+                            selected_category=category, using_gps=using_gps,
+                            user_lat=raw_lat, user_lng=raw_lng)
 
 
 @app.route("/provider/<int:provider_id>")
