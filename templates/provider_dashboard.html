@@ -6,6 +6,12 @@
   <div class="sub">Provider Dashboard</div>
 </div>
 
+{% if provider.is_on_trial() %}
+<div style="margin:14px 18px 0;background:#FBF0DD;border:1px solid #E8A93B;border-radius:10px;padding:10px 14px;font-size:11px;color:#0F3D3E;">
+  🎁 Free trial — <b>{{ provider.days_left_in_trial() }} araw na lang</b>.
+</div>
+{% endif %}
+
 <div style="display:flex;gap:10px;padding:14px 18px 4px;">
   <div style="flex:1;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 10px;">
     <b style="display:block;font-family:'Fraunces',serif;font-size:20px;color:var(--teal-deep);">{{ pending|length }}</b>
@@ -39,10 +45,12 @@
   <div style="display:flex;gap:8px;margin-top:8px;">
     <form method="POST" action="{{ url_for('update_booking_status', booking_id=b.id) }}" style="flex:1;">
       <input type="hidden" name="status" value="confirmed">
+      <input type="hidden" name="unlocked" value="{{ unlocked }}">
       <button type="submit" class="btn btn-dark" style="padding:7px 0;font-size:10px;">Accept</button>
     </form>
     <form method="POST" action="{{ url_for('update_booking_status', booking_id=b.id) }}" style="flex:1;">
       <input type="hidden" name="status" value="declined">
+      <input type="hidden" name="unlocked" value="{{ unlocked }}">
       <button type="submit" class="btn btn-secondary" style="padding:7px 0;font-size:10px;">Decline</button>
     </form>
   </div>
@@ -63,6 +71,9 @@
 {% endfor %}
 
 <div style="padding:16px 18px 4px;text-align:center;">
+  <a href="{{ url_for('provider_edit_services', provider_id=provider.id, unlocked=unlocked) }}" style="font-size:11px;color:var(--teal-deep);font-weight:700;">✏️ I-edit ang Services →</a>
+</div>
+<div style="padding:4px 18px 4px;text-align:center;">
   <a href="{{ url_for('provider_profile', provider_id=provider.id) }}" style="font-size:11px;color:#8B8368;">Tingnan ang public profile mo →</a>
 </div>
 {% endblock %}
