@@ -246,6 +246,51 @@ def provider_dashboard(provider_id):
                             unlocked=unlocked)
 
 
+@app.route("/provider/<int:provider_id>/services", methods=["GET", "POST"])
+def provider_edit_services(provider_id):
+    provider = Provider.query.get_or_404(provider_id)
+    unlocked = request.args.get("unlocked", "")
+    if unlocked != provider.access_code:
+        return render_template("provider_login.html", provider=provider)
+
+    if request.method == "POST":
+        service_ids = request.form.getlist("service_id[]")
+        names = request.form.getlist("service_name[]")
+        prices = request.form.getlist("service_price[]")
+
+        # Update or create services based on submitted rows
+        submitted_ids = set()
+        for sid, name, price in zip(service_ids, names, prices):
+            if not name.strip():
+                continue
+            price_val = float(price) if price else None
+            if sid:
+                service = Service.query.get(int(sid))
+                if service and service.provider_id == provider.id:
+                    service.name = name.strip()
+                    service.price = price_val
+                    submitted_ids.add(service.id)
+            else:
+                new_service = Service(provider_id=provider.id, name=name.strip(), price=price_val)
+                db.session.add(new_service)
+                db.session.flush()  # assigns new_service.id so we can track it below
+                submitted_ids.add(new_service.id)
+
+        # Deactivate any existing services that were removed from the form
+        # (i.e. any currently-active service whose id wasn't resubmitted)
+        existing_services = Service.query.filter_by(provider_id=provider.id, active=True).all()
+        for s in existing_services:
+            if s.id not in submitted_ids:
+                s.active = False
+
+        db.session.commit()
+        flash("Na-save na ang mga services mo!", "success")
+        return redirect(url_for("provider_dashboard", provider_id=provider.id, unlocked=unlocked))
+
+    services = Service.query.filter_by(provider_id=provider.id, active=True).all()
+    return render_template("provider_edit_services.html", provider=provider, services=services, unlocked=unlocked)
+
+
 @app.route("/booking/<int:booking_id>/status", methods=["POST"])
 def update_booking_status(booking_id):
     booking = Booking.query.get_or_404(booking_id)
