@@ -48,6 +48,14 @@ class Provider(db.Model):
     status = db.Column(db.String(20), default="pending")         # pending/active/suspended
     quote_only = db.Column(db.Boolean, default=False)            # True for electrician/mekaniko-style variable pricing
 
+    # Subscription / trial gating — providers need an active trial or paid
+    # subscription to appear in search and access their dashboard. Customers
+    # never need any of this — booking always stays free and passwordless.
+    access_code = db.Column(db.String(10))                       # PIN providers use to open their dashboard
+    trial_ends_at = db.Column(db.DateTime)                       # set on signup: now + 15 days
+    subscription_active = db.Column(db.Boolean, default=False)   # True once they've paid
+    subscription_expires_at = db.Column(db.DateTime)             # renews monthly once paid
+
     rating = db.Column(db.Float, default=5.0)
     review_count = db.Column(db.Integer, default=0)
 
@@ -77,6 +85,27 @@ class Provider(db.Model):
 
     def tier_info(self):
         return PACKAGE_TIERS.get(self.package_tier, PACKAGE_TIERS["starter"])
+
+    def has_access(self):
+        """True if provider can appear in search + open their dashboard —
+        either still inside their 15-day free trial, or has an active paid
+        subscription that hasn't expired."""
+        now = datetime.utcnow()
+        if self.trial_ends_at and now <= self.trial_ends_at:
+            return True
+        if self.subscription_active and self.subscription_expires_at and now <= self.subscription_expires_at:
+            return True
+        return False
+
+    def is_on_trial(self):
+        now = datetime.utcnow()
+        return bool(self.trial_ends_at and now <= self.trial_ends_at and not (self.subscription_active and self.subscription_expires_at and now <= self.subscription_expires_at))
+
+    def days_left_in_trial(self):
+        if not self.trial_ends_at:
+            return 0
+        delta = self.trial_ends_at - datetime.utcnow()
+        return max(0, delta.days)
 
 
 class Service(db.Model):
@@ -111,3 +140,13 @@ class Booking(db.Model):
     quoted_price = db.Column(db.Float)                        # used when service is quote_only
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class ChatSession(db.Model):
+    __tablename__ = "chat_sessions"
+
+    id = db.Column(db.Integer, primary_key=True)
+    sender_id = db.Column(db.String(64), unique=True, nullable=False)  # Facebook PSID
+    state = db.Column(db.String(30), default="start")
+    data = db.Column(db.Text, default="{}")  # JSON blob: category, provider_id, service_id, etc.
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
