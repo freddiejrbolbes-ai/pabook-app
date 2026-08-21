@@ -6,6 +6,11 @@
   <div class="sub">May negosyo ka? Pumili ng package</div>
 </div>
 
+<div style="margin:14px 18px 0;background:#DCEFE0;border:1px solid #B7DEC0;border-radius:10px;padding:12px 14px;">
+  <p style="font-size:12px;color:#1B5E3A;font-weight:700;margin:0 0 2px;">🎁 15-Day Free Trial</p>
+  <p style="font-size:11px;color:#1B5E3A;margin:0;">Libre muna ang lahat ng package sa unang 15 araw — hindi ka pa babayaran. Magsisimula lang ang bayad pagkatapos ng trial.</p>
+</div>
+
 <div style="padding:16px 18px 4px;">
   <p style="font-size:13px;color:#8B8368;margin:0;">Pumili ng package na bagay sa negosyo mo. Babayaran via GCash — kukumpirmahin muna ang bayad bago ma-activate ang listing mo.</p>
 </div>
@@ -22,6 +27,7 @@
     <div style="text-align:right;">
       <div style="font-size:15px;font-weight:700;color:#C24A3B;">₱{{ info.setup_fee }}</div>
       <div style="font-size:10px;color:#8B8368;">setup + ₱{{ info.monthly_fee }}/buwan</div>
+      <div style="font-size:9px;color:#1B5E3A;font-weight:700;margin-top:2px;">pagkatapos ng 15-day trial</div>
     </div>
   </div>
 
@@ -49,12 +55,18 @@
      background:{{ '#C24A3B' if key=='standard' else '#fff' }};
      color:{{ '#fff' if key=='standard' else '#0F3D3E' }};
      border:{{ 'none' if key=='standard' else '1px solid #D9CFB8' }};">
-    Piliin ang {{ info.label }} →
+    Simulan ang Libreng Trial — {{ info.label }} →
   </a>
 </div>
 {% endfor %}
+
+<div style="text-align:center;padding:0 18px 20px;">
+  <p style="font-size:10px;color:#8B8368;">Walang bayad ngayon. Aabisuhan ka pa bago mag-charge pagkatapos ng 15 araw.</p>
+</div>
 
 <div style="text-align:center;padding:20px 18px;">
   <a href="{{ url_for('home') }}" style="font-size:11px;color:#8B8368;">← Balik sa home</a>
 </div>
 {% endblock %}
+
+
