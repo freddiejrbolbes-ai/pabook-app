@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}{{ provider.business_name }}{% endblock %}
+{% block content %}
+{% set label, icon = provider.category_label() %}
+<a class="backlink" href="{{ url_for('home') }}">← Balik</a>
+
+<div style="padding:16px 18px 4px;">
+  <div style="display:flex;gap:12px;align-items:center;">
+    <div class="avatar" style="width:64px;height:64px;font-size:26px;">{{ icon }}</div>
+    <div>
+      <p class="p-name" style="font-size:17px;">{{ provider.business_name }}</p>
+      <p class="p-meta">⭐ {{ provider.rating }} ({{ provider.review_count }} reviews) · {{ label }}</p>
+      <p class="p-meta">📍 {{ provider.address_text }}, {{ provider.barangay }}</p>
+    </div>
+  </div>
+</div>
+
+<div class="section-label">Oras ng Bukas</div>
+<div style="margin:0 18px;font-size:12px;color:var(--ink);">
+  {{ provider.days_open }}: {{ provider.hours_open }} – {{ provider.hours_close }}
+  {% if provider.closed_sunday %}<br>Linggo: Closed{% endif %}
+</div>
+
+<div class="section-label">Mga Serbisyo</div>
+{% for s in services %}
+<div style="display:flex;justify-content:space-between;margin:0 18px;padding:10px 0;border-bottom:1px dashed var(--line);font-size:13px;">
+  <span>{{ s.name }}</span>
+  <b style="color:var(--red);">{{ '₱%.0f'|format(s.price) if s.price else 'Request quote' }}</b>
+</div>
+{% endfor %}
+
+<div class="cta-fixed">
+  <a href="{{ url_for('book', provider_id=provider.id) }}" class="btn btn-primary">
+    {{ 'Mag-request ng Quote' if provider.quote_only else 'Mag-book Ngayon' }}
+  </a>
+</div>
+{% endblock %}

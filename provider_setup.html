@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}I-setup ang Negosyo Mo{% endblock %}
+{% block content %}
+<div class="topbar">
+  <div class="brand">📍 PaBook Setup</div>
+  <div class="sub">I-set up ang shop mo — 5 minuto lang</div>
+</div>
+
+<form method="POST" id="setupForm">
+  <div class="section-label">Business Info</div>
+  <div class="field">
+    <label>Pangalan ng negosyo</label>
+    <input type="text" name="business_name" required placeholder="Kuya Ronnie's Barbershop">
+  </div>
+  <div class="field">
+    <label>Kategorya</label>
+    <select name="category" required>
+      {% for key, label, icon in categories %}
+      <option value="{{ key }}">{{ icon }} {{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="field">
+    <label>Pangalan mo (may-ari)</label>
+    <input type="text" name="owner_name" placeholder="Ronnie Dela Cruz">
+  </div>
+  <div class="field">
+    <label>Contact Number</label>
+    <input type="text" name="phone" required placeholder="09XXXXXXXXX">
+  </div>
+  <div class="field">
+    <label>Email (optional)</label>
+    <input type="email" name="email" placeholder="shop@email.com">
+  </div>
+  <div class="field">
+    <label><input type="checkbox" name="quote_only" style="width:auto;display:inline;"> Variable ang presyo ko (electrician/mekaniko) — "request quote" na lang</label>
+  </div>
+
+  <div class="section-label">Mga Serbisyo at Presyo</div>
+  <div id="servicesList">
+    <div class="field" style="display:flex;gap:8px;margin:0 18px 10px;">
+      <input type="text" name="service_name[]" placeholder="Halimbawa: Regular haircut" style="flex:2;">
+      <input type="number" name="service_price[]" placeholder="₱" style="flex:1;">
+    </div>
+    <div class="field" style="display:flex;gap:8px;margin:0 18px 10px;">
+      <input type="text" name="service_name[]" placeholder="Isa pang serbisyo" style="flex:2;">
+      <input type="number" name="service_price[]" placeholder="₱" style="flex:1;">
+    </div>
+    <div class="field" style="display:flex;gap:8px;margin:0 18px 10px;">
+      <input type="text" name="service_name[]" placeholder="Isa pang serbisyo" style="flex:2;">
+      <input type="number" name="service_price[]" placeholder="₱" style="flex:1;">
+    </div>
+  </div>
+  <div class="hint" style="margin:0 18px 8px;">Iwanang blangko kung wala ka nang idadagdag.</div>
+
+  <div class="section-label">Lokasyon</div>
+  <div class="field">
+    <label>Address</label>
+    <input type="text" name="address_text" required placeholder="Purok 3, Brgy. Poblacion">
+  </div>
+  <div class="field">
+    <label>Barangay</label>
+    <input type="text" name="barangay" required placeholder="Poblacion">
+  </div>
+  <div class="field">
+    <label>Latitude</label>
+    <input type="number" step="any" name="latitude" placeholder="7.5906">
+    <div class="hint">Pwede kunin sa Google Maps — i-tap and hold ang lokasyon mo, kokopyahin yung mga numero.</div>
+  </div>
+  <div class="field">
+    <label>Longitude</label>
+    <input type="number" step="any" name="longitude" placeholder="125.6772">
+  </div>
+  <div class="field">
+    <label>Service radius (km) — gaano kalayo lalabas ka sa search</label>
+    <input type="number" step="any" name="service_radius_km" value="3">
+  </div>
+
+  <div class="section-label">Oras ng Bukas</div>
+  <div class="field">
+    <label>Bukas mula</label>
+    <input type="time" name="hours_open" value="09:00">
+  </div>
+  <div class="field">
+    <label>Sarado sa</label>
+    <input type="time" name="hours_close" value="18:00">
+  </div>
+
+  <div class="section-label">Package</div>
+  <div class="field">
+    <select name="package_tier">
+      {% for key, info in tiers.items() %}
+      <option value="{{ key }}">{{ info.label }} — ₱{{ info.setup_fee }} setup + ₱{{ info.monthly_fee }}/month</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="cta-fixed">
+    <button type="submit" class="btn btn-primary">I-publish ang Profile</button>
+  </div>
+</form>
+{% endblock %}

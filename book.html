@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Book — {{ provider.business_name }}{% endblock %}
+{% block content %}
+<a class="backlink" href="{{ url_for('provider_profile', provider_id=provider.id) }}">← Balik sa profile</a>
+
+<div class="topbar" style="background:var(--cream);color:var(--ink);padding:14px 18px 4px;">
+  <p style="font-family:'Fraunces',serif;font-weight:700;font-size:17px;margin:0;">{{ provider.business_name }}</p>
+</div>
+
+<form method="POST">
+  <div class="field">
+    <label>Piliin ang Serbisyo</label>
+    <select name="service_id" required>
+      <option value="">— Piliin —</option>
+      {% for s in services %}
+      <option value="{{ s.id }}" {{ 'selected' if selected_service_id==s.id else '' }}>
+        {{ s.name }} {{ '(₱%.0f)'|format(s.price) if s.price else '(request quote)' }}
+      </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Petsa</label>
+    <select name="booking_date" required>
+      {% for d in days %}
+      <option value="{{ d.iso }}">{{ d.iso }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Oras</label>
+    <select name="booking_time" required>
+      {% for t in slots %}
+      <option value="{{ t }}">{{ t }}</option>
+      {% endfor %}
+    </select>
+    <div class="hint">Base sa oras ng bukas ng shop: {{ provider.hours_open }}–{{ provider.hours_close }}</div>
+  </div>
+
+  <div class="field">
+    <label>Pangalan mo</label>
+    <input type="text" name="customer_name" required placeholder="Juan Dela Cruz">
+  </div>
+
+  <div class="field">
+    <label>Contact Number</label>
+    <input type="text" name="customer_phone" required placeholder="09XXXXXXXXX">
+  </div>
+
+  <div class="field">
+    <label>Note (optional)</label>
+    <textarea name="notes" placeholder="Halimbawa: gusto ko po ng short sa likod, at problema sa motor ko ay..."></textarea>
+  </div>
+
+  <div class="cta-fixed">
+    <button type="submit" class="btn btn-primary">
+      {{ 'I-submit ang Quote Request' if provider.quote_only else 'Kumpirmahin ang Booking' }}
+    </button>
+  </div>
+</form>
+{% endblock %}

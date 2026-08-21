@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Booking Confirmed{% endblock %}
+{% block content %}
+<div style="padding:60px 24px;text-align:center;">
+  <div style="font-size:48px;margin-bottom:16px;">✅</div>
+  <p style="font-family:'Fraunces',serif;font-weight:700;font-size:20px;margin:0 0 8px;">Na-submit na!</p>
+  <p style="font-size:13px;color:#8B8368;margin:0 0 24px;">
+    Booking #{{ booking.id }} — {{ booking.provider.business_name }}<br>
+    {{ booking.booking_date }} · {{ booking.booking_time }}<br><br>
+    Maghihintay ka na lang ng SMS confirmation mula sa provider. Status: <b style="color:var(--red);">Pending</b>
+  </p>
+  <a href="{{ url_for('home') }}" class="btn btn-secondary">Balik sa Home</a>
+</div>
+{% endblock %}

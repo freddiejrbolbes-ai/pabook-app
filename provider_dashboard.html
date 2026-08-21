@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — {{ provider.business_name }}{% endblock %}
+{% block content %}
+<div class="topbar">
+  <div class="brand">{{ provider.business_name }}</div>
+  <div class="sub">Provider Dashboard</div>
+</div>
+
+<div style="display:flex;gap:10px;padding:14px 18px 4px;">
+  <div style="flex:1;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 10px;">
+    <b style="display:block;font-family:'Fraunces',serif;font-size:20px;color:var(--teal-deep);">{{ pending|length }}</b>
+    <span style="font-size:9px;color:#8B8368;font-weight:600;">NAGHIHINTAY</span>
+  </div>
+  <div style="flex:1;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 10px;">
+    <b style="display:block;font-family:'Fraunces',serif;font-size:20px;color:var(--teal-deep);">₱{{ '%.0f'|format(earnings_today) }}</b>
+    <span style="font-size:9px;color:#8B8368;font-weight:600;">KITA NGAYON</span>
+  </div>
+  <div style="flex:1;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 10px;">
+    <b style="display:block;font-family:'Fraunces',serif;font-size:20px;color:var(--teal-deep);">{{ provider.rating }}★</b>
+    <span style="font-size:9px;color:#8B8368;font-weight:600;">RATING</span>
+  </div>
+</div>
+
+<div class="section-label">Naghihintay ng Approval ({{ pending|length }})</div>
+{% if not pending %}
+<div class="empty">Walang bagong booking sa ngayon.</div>
+{% endif %}
+{% for b in pending %}
+<div style="margin:0 18px 10px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--red);border-radius:10px;padding:10px 12px;">
+  <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;">
+    <span>{{ b.customer_name }}</span><span>{{ b.booking_date }} · {{ b.booking_time }}</span>
+  </div>
+  <div style="font-size:10px;color:#8B8368;margin-top:2px;">
+    {{ b.service.name if b.service else 'Quote request' }}
+    {% if b.service and b.service.price %} · ₱{{ '%.0f'|format(b.service.price) }}{% endif %}
+    · 📞 {{ b.customer_phone }}
+  </div>
+  {% if b.notes %}<div style="font-size:10px;color:#8B8368;margin-top:4px;">"{{ b.notes }}"</div>{% endif %}
+  <div style="display:flex;gap:8px;margin-top:8px;">
+    <form method="POST" action="{{ url_for('update_booking_status', booking_id=b.id) }}" style="flex:1;">
+      <input type="hidden" name="status" value="confirmed">
+      <button type="submit" class="btn btn-dark" style="padding:7px 0;font-size:10px;">Accept</button>
+    </form>
+    <form method="POST" action="{{ url_for('update_booking_status', booking_id=b.id) }}" style="flex:1;">
+      <input type="hidden" name="status" value="declined">
+      <button type="submit" class="btn btn-secondary" style="padding:7px 0;font-size:10px;">Decline</button>
+    </form>
+  </div>
+</div>
+{% endfor %}
+
+<div class="section-label">Kumpirmado ({{ confirmed|length }})</div>
+{% if not confirmed %}
+<div class="empty">Wala pang kumpirmadong booking.</div>
+{% endif %}
+{% for b in confirmed %}
+<div style="margin:0 18px 10px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;padding:10px 12px;">
+  <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;">
+    <span>{{ b.customer_name }}</span><span>{{ b.booking_date }} · {{ b.booking_time }} ✓</span>
+  </div>
+  <div style="font-size:10px;color:#8B8368;margin-top:2px;">{{ b.service.name if b.service else 'Quote request' }}</div>
+</div>
+{% endfor %}
+
+<div style="padding:16px 18px 4px;text-align:center;">
+  <a href="{{ url_for('provider_profile', provider_id=provider.id) }}" style="font-size:11px;color:#8B8368;">Tingnan ang public profile mo →</a>
+</div>
+{% endblock %}
