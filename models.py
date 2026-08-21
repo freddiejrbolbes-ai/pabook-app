@@ -10,6 +10,7 @@ CATEGORIES = [
     ("electrician", "Electrician", "🔌"),
     ("mekaniko", "Mekaniko / Auto Repair", "🔧"),
     ("nails", "Nail Salon", "💅"),
+    ("trucking", "Transportation / Lipat-bahay", "🚚"),
 ]
 
 PACKAGE_TIERS = {
@@ -100,6 +101,7 @@ class Booking(db.Model):
 
     customer_name = db.Column(db.String(120), nullable=False)
     customer_phone = db.Column(db.String(30), nullable=False)
+    customer_email = db.Column(db.String(120))
 
     booking_date = db.Column(db.String(10), nullable=False)   # YYYY-MM-DD
     booking_time = db.Column(db.String(10), nullable=False)   # HH:MM
