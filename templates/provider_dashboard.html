@@ -76,4 +76,11 @@
 <div style="padding:4px 18px 4px;text-align:center;">
   <a href="{{ url_for('provider_profile', provider_id=provider.id) }}" style="font-size:11px;color:#8B8368;">Tingnan ang public profile mo →</a>
 </div>
+
+<div style="padding:16px 18px 24px;text-align:center;">
+<div class="section-label" style="margin-bottom:10px;">QR Code ng Negosyo Mo</div>
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ url_for('provider_profile', provider_id=provider.id, _external=True) | urlencode }}" alt="QR Code" style="border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff;">
+<p style="font-size:11px;color:#8B8368;margin-top:10px;max-width:280px;margin-left:auto;margin-right:auto;">I-print ito at ipaskil sa shop mo, pag-scan ng customer deretso sa profile mo sa PaBook.</p>
+<a href="https://api.qrserver.com/v1/create-qr-code/?size=500x500&data={{ url_for('provider_profile', provider_id=provider.id, _external=True) | urlencode }}" download="pabook-qr-{{ provider.id }}.png" style="display:inline-block;margin-top:8px;font-size:11px;color:var(--teal-deep);font-weight:700;">I-download ang QR Code</a>
+</div>
 {% endblock %}
