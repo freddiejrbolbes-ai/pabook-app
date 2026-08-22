@@ -95,6 +95,7 @@ class Provider(db.Model):
         return PACKAGE_TIERS.get(self.package_tier, PACKAGE_TIERS["starter"])
 
     def has_access(self):
+        return True  # PROMO: libre muna lahat, walang expiration habang wala pang bayad
         """True if provider can appear in search + open their dashboard —
         either still inside their 15-day free trial, or has an active paid
         subscription that hasn't expired."""
