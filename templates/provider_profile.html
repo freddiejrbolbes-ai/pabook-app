@@ -9,7 +9,7 @@
     <div class="avatar" style="width:64px;height:64px;font-size:26px;">{{ icon }}</div>
     <div>
       <p class="p-name" style="font-size:17px;">{{ provider.business_name }}</p>
-      <p class="p-meta">⭐ {{ provider.rating }} ({{ provider.review_count }} reviews) · {{ label }}</p>
+      <p class="p-meta">{% if provider.review_count > 0 %}⭐ {{ provider.rating }} ({{ provider.review_count }} reviews){% else %}🆕 Bagong lista sa PaBook{% endif %} · {{ label }}</p>
       <p class="p-meta">📍 {{ provider.address_text }}, {{ provider.barangay }}</p>
     </div>
   </div>
@@ -28,7 +28,9 @@
   <b style="color:var(--red);">{{ '₱%.0f'|format(s.price) if s.price else 'Request quote' }}</b>
 </div>
 {% endfor %}
-
+{% if provider.quote_only %}
+<p style="text-align:center;font-size:11px;color:#8B8368;margin:12px 18px 0;">💡 Walang bayad hanggang hindi ka pa nag-a-agree sa presyo. Mag-request lang ng quote nang libre.</p>p>
+{% endif %}
 <div class="cta-fixed">
   <a href="{{ url_for('book', provider_id=provider.id) }}" class="btn btn-primary">
     {{ 'Mag-request ng Quote' if provider.quote_only else 'Mag-book Ngayon' }}
