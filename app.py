@@ -284,6 +284,13 @@ def provider_edit_services(provider_id):
             if s.id not in submitted_ids:
                 s.active = False
 
+        lat_val = request.form.get("latitude", type=float)
+        lng_val = request.form.get("longitude", type=float)
+        if lat_val is not None:
+            provider.latitude = lat_val
+        if lng_val is not None:
+            provider.longitude = lng_val
+
         db.session.commit()
         flash("Na-save na ang mga services mo!", "success")
         return redirect(url_for("provider_dashboard", provider_id=provider.id, unlocked=unlocked))
