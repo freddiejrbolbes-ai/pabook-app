@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 from datetime import datetime, timedelta
 import random
 import os
+import requests
 from models import db, Provider, Service, Booking, CATEGORIES, PACKAGE_TIERS
 from mailer import (send_booking_confirmation_to_customer,
                      send_new_booking_alert_to_provider,
@@ -25,6 +26,32 @@ db.init_app(app)
 # Default reference point: Kapalong, Davao del Norte (used when customer location unknown)
 DEFAULT_LAT = 7.5906
 DEFAULT_LNG = 125.6772
+
+
+def get_client_ip():
+    """Best-effort real visitor IP behind Render's proxy."""
+    forwarded = request.headers.get("X-Forwarded-For", "")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    return request.remote_addr
+
+
+def ip_geolocate(ip):
+    """Best-effort IP-based location lookup, used when the visitor's browser
+    doesn't share GPS. Works for anywhere in the Philippines (or the world) -
+    not tied to any one city. Returns (None, None) on any failure, which
+    means the home page falls back to showing all providers with no
+    distance filter, rather than assuming a single default city."""
+    if not ip or ip.startswith("127.") or ip.startswith("10.") or ip == "localhost":
+        return None, None
+    try:
+        resp = requests.get(f"http://ip-api.com/json/{ip}", timeout=2)
+        data = resp.json()
+        if data.get("status") == "success":
+            return data.get("lat"), data.get("lon")
+    except Exception:
+        pass
+    return None, None
 
 
 # ---------- helpers ----------
@@ -55,9 +82,11 @@ def home():
     category = request.args.get("category")
     raw_lat = request.args.get("lat", type=float)
     raw_lng = request.args.get("lng", type=float)
-    lat = raw_lat or DEFAULT_LAT
-    lng = raw_lng or DEFAULT_LNG
     using_gps = raw_lat is not None and raw_lng is not None
+    if using_gps:
+        lat, lng = raw_lat, raw_lng
+    else:
+        lat, lng = ip_geolocate(get_client_ip())
 
     query = Provider.query.filter_by(status="active")
     if category:
@@ -69,7 +98,7 @@ def home():
     for p in providers:
         if not p.has_access():
             continue  # trial expired and no active subscription — hidden from search
-        dist = p.distance_km(lat, lng)
+        dist = p.distance_km(lat, lng) if lat is not None else None
         if dist is not None and dist > p.service_radius_km:
             continue  # outside their service area
         results.append((p, dist))
