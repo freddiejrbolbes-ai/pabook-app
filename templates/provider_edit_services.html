@@ -27,6 +27,17 @@
   </div>
   <div class="hint" style="margin:0 18px 14px;">Iwanang blangko ang presyo kung "Get Quote" lang ang gusto mo para dito.</div>
 
+  <div class="section-label">Lokasyon ng Negosyo</div>
+  <div class="field" style="margin:0 18px 10px;">
+    <label style="font-size:11px;color:#8B8368;display:block;margin-bottom:4px;">Latitude</label>
+    <input type="number" step="any" name="latitude" value="{{ provider.latitude }}" style="width:100%;">
+  </div>
+  <div class="field" style="margin:0 18px 14px;">
+    <label style="font-size:11px;color:#8B8368;display:block;margin-bottom:4px;">Longitude</label>
+    <input type="number" step="any" name="longitude" value="{{ provider.longitude }}" style="width:100%;">
+    <div class="hint" style="margin-top:4px;">I-check ang tamang coordinates sa Google Maps (i-right-click sa lokasyon mo doon, kopyahin ang lat, lng na lalabas).</div>
+  </div>
+
   <div class="cta-fixed">
     <button type="submit" class="btn btn-primary">I-save ang Changes</button>
   </div>
