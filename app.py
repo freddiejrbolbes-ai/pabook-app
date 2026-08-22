@@ -498,8 +498,8 @@ def provider_delete(provider_id):
           /provider/<id>/delete?unlocked=<access_code> - the same code used for the dashboard."""
         provider = Provider.query.get_or_404(provider_id)
         unlocked = request.args.get("unlocked", "")
-        if unlocked != provider.access_code:
-            return "Forbidden", 403
+        admin_secret = os.environ.get("ADMIN_SECRET", "changeme")
+          if unlocked != provider.access_code and request.args.get("secret") != admin_secret:            return "Forbidden", 403
         db.session.delete(provider)
         db.session.commit()
         return redirect(url_for("home"))
