@@ -221,7 +221,8 @@ def provider_dashboard(provider_id):
 
     # Access code check — the provider must enter their PIN once per browser
     # session before seeing bookings. Customers never touch this at all.
-    unlocked = request.args.get("unlocked") == provider.access_code
+    unlock_code = request.args.get("unlocked", "")
+    is_unlocked = unlock_code == provider.access_code
     if request.method == "POST":
         entered_code = request.form.get("access_code", "").strip()
         if entered_code == provider.access_code:
@@ -229,11 +230,11 @@ def provider_dashboard(provider_id):
         flash("Maling access code. Subukan ulit.", "error")
         return render_template("provider_login.html", provider=provider)
 
-    if not unlocked:
+    if not is_unlocked:
         return render_template("provider_login.html", provider=provider)
 
     if not provider.has_access():
-        return render_template("provider_trial_expired.html", provider=provider, unlocked=unlocked)
+        return render_template("provider_trial_expired.html", provider=provider, unlocked=unlock_code)
 
     bookings = Booking.query.filter_by(provider_id=provider.id).order_by(Booking.booking_date, Booking.booking_time).all()
     pending = [b for b in bookings if b.status == "pending"]
@@ -243,7 +244,7 @@ def provider_dashboard(provider_id):
                          if b.booking_date == today_str and b.status in ("confirmed", "completed") and b.service)
     return render_template("provider_dashboard.html", provider=provider, pending=pending,
                             confirmed=confirmed, earnings_today=earnings_today, today_str=today_str,
-                            unlocked=unlocked)
+                            unlocked=unlock_code)
 
 
 @app.route("/provider/<int:provider_id>/services", methods=["GET", "POST"])
