@@ -60,7 +60,7 @@
     <p class="p-name">{{ provider.business_name }}
       {% if provider.tier_info().featured %}<span class="badge-featured">FEATURED</span>{% endif %}
     </p>
-    <p class="p-meta">⭐ {{ provider.rating }} · {{ distance }}km · {{ provider.barangay }}</p>
+    <p class="p-meta">{% if provider.review_count > 0 %}⭐ {{ provider.rating }} ({{ provider.review_count }} reviews){% else %}🆕 Bagong lista{% endif %} · {{ distance }}km · {{ provider.barangay }}</p>
     <span class="tag">{{ label }}</span>
   </div>
   <div class="p-price">
