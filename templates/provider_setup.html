@@ -172,11 +172,15 @@
 
   // Validate a location was picked before allowing submit
   document.getElementById('setupForm').addEventListener('submit', function (e) {
-    if (!document.getElementById('latField').value) {
-      e.preventDefault();
-      alert('I-tap muna ang lokasyon ng negosyo mo sa mapa.');
-      document.getElementById('pickerMap').scrollIntoView({ behavior: 'smooth' });
-    }
+    const missing = [];
+      if (!document.querySelector('[name="business_name"]').value.trim()) missing.push('Pangalan ng negosyo');
+      if (!document.querySelector('[name="barangay"]').value.trim()) missing.push('Barangay');
+      if (!document.getElementById('latField').value) missing.push('Lokasyon sa mapa (i-tap ang mapa)');
+      if (missing.length) {
+        e.preventDefault();
+        alert('Kulang pa: ' + missing.join(', ') + '. Paki-punan bago mag-publish.');
+        document.getElementById('pickerMap').scrollIntoView({ behavior: 'smooth' });
+      }
   });
 </script>
 {% endblock %}
