@@ -2,71 +2,24 @@
 {% block title %}May negosyo ka? — PaBook{% endblock %}
 {% block content %}
 <div class="topbar">
-  <div class="brand">📍 PaBook</div>
-  <div class="sub">May negosyo ka? Pumili ng package</div>
+<div class="brand">📍 PaBook</div>
+<div class="sub">May negosyo ka? Sumali nang LIBRE</div>
 </div>
 
-<div style="margin:14px 18px 0;background:#DCEFE0;border:1px solid #B7DEC0;border-radius:10px;padding:12px 14px;">
-  <p style="font-size:12px;color:#1B5E3A;font-weight:700;margin:0 0 2px;">🎁 15-Day Free Trial</p>
-  <p style="font-size:11px;color:#1B5E3A;margin:0;">Libre muna ang lahat ng package sa unang 15 araw — hindi ka pa babayaran. Magsisimula lang ang bayad pagkatapos ng trial.</p>
+<div style="margin:14px 18px 0;background:#DCEFE0;border:1px solid #B7DEC0;border-radius:10px;padding:14px 16px;">
+<p style="font-size:13px;color:#1B5E3A;font-weight:700;margin:0 0 4px;">🎁 100% LIBRE ang pag-sign up ngayon</p>
+<p style="font-size:11px;color:#1B5E3A;margin:0;">Wala pang bayad — i-list ang negosyo mo ngayon, walang setup fee, walang monthly fee habang bago pa ang PaBook.</p>
 </div>
 
-<div style="padding:16px 18px 4px;">
-  <p style="font-size:13px;color:#8B8368;margin:0;">Pumili ng package na bagay sa negosyo mo. Babayaran via GCash — kukumpirmahin muna ang bayad bago ma-activate ang listing mo.</p>
-</div>
+<div style="padding:20px 18px 4px;">
+<p style="font-size:13px;color:#8B8368;margin:0 0 18px;">Idagdag ang negosyo mo sa PaBook at makakuha ng mga customer sa lugar mo — salon, barbershop, mekaniko, trucking, paupahan, at marami pa.</p>
 
-{% for key, info in tiers.items() %}
-<div style="margin:14px 18px 0;background:#fff;border-radius:14px;padding:16px;
-  border:{{ '2px solid #C24A3B' if key=='standard' else '1px solid #D9CFB8' }};position:relative;">
-  {% if key == 'standard' %}
-  <span style="position:absolute;top:-9px;left:16px;background:#E8A93B;color:#fff;font-size:9px;padding:3px 8px;border-radius:6px;font-weight:800;letter-spacing:.05em;">PINAKA-SIKAT</span>
-  {% endif %}
-
-  <div style="display:flex;justify-content:space-between;align-items:baseline;">
-    <p style="font-family:'Fraunces',serif;font-weight:700;font-size:18px;margin:0;color:#0F3D3E;">{{ info.label }}</p>
-    <div style="text-align:right;">
-      <div style="font-size:15px;font-weight:700;color:#C24A3B;">₱{{ info.setup_fee }}</div>
-      <div style="font-size:10px;color:#8B8368;">setup + ₱{{ info.monthly_fee }}/buwan</div>
-      <div style="font-size:9px;color:#1B5E3A;font-weight:700;margin-top:2px;">pagkatapos ng 15-day trial</div>
-    </div>
-  </div>
-
-  <p style="font-size:11px;color:#8B8368;margin:6px 0 10px;">
-    {% if key == 'starter' %}Para sa solo provider — barbero, mekaniko na iisa lang
-    {% elif key == 'standard' %}Para sa salon o shop na may 2-5 staff
-    {% else %}Para sa multi-branch o mataas ang booking volume{% endif %}
-  </p>
-
-  <div style="font-size:12px;color:#12201F;margin-bottom:4px;">✓ Hanggang {{ info.max_services if info.max_services < 999 else 'unlimited' }} services</div>
-  <div style="font-size:12px;color:#12201F;margin-bottom:4px;">✓ Unlimited bookings</div>
-  {% if key == 'standard' %}
-  <div style="font-size:12px;color:#12201F;margin-bottom:4px;">✓ Multi-staff scheduling</div>
-  <div style="font-size:12px;color:#12201F;margin-bottom:4px;">✓ Priority sa search results</div>
-  {% elif key == 'premium' %}
-  <div style="font-size:12px;color:#12201F;margin-bottom:4px;">✓ Featured listing (laging nasa taas)</div>
-  <div style="font-size:12px;color:#12201F;margin-bottom:4px;">✓ Monthly performance report</div>
-  {% else %}
-  <div style="font-size:12px;color:#12201F;margin-bottom:4px;">✓ Basic listing</div>
-  {% endif %}
-
-  <a href="{{ url_for('provider_setup', package=key) }}"
-     style="display:block;text-align:center;margin-top:14px;padding:11px 0;border-radius:10px;
-     font-weight:700;font-size:12px;
-     background:{{ '#C24A3B' if key=='standard' else '#fff' }};
-     color:{{ '#fff' if key=='standard' else '#0F3D3E' }};
-     border:{{ 'none' if key=='standard' else '1px solid #D9CFB8' }};">
-    Simulan ang Libreng Trial — {{ info.label }} →
-  </a>
-</div>
-{% endfor %}
-
-<div style="text-align:center;padding:0 18px 20px;">
-  <p style="font-size:10px;color:#8B8368;">Walang bayad ngayon. Aabisuhan ka pa bago mag-charge pagkatapos ng 15 araw.</p>
+<a href="{{ url_for('provider_setup') }}" style="display:block;text-align:center;padding:15px 0;border-radius:12px;font-weight:700;font-size:14px;background:#C24A3B;color:#fff;">
+Sumali nang LIBRE →
+</a>
 </div>
 
 <div style="text-align:center;padding:20px 18px;">
-  <a href="{{ url_for('home') }}" style="font-size:11px;color:#8B8368;">← Balik sa home</a>
+<a href="{{ url_for('home') }}" style="font-size:11px;color:#8B8368;">← Balik sa home</a>
 </div>
 {% endblock %}
-
-
