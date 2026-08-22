@@ -494,7 +494,7 @@ def admin_activate_subscription(provider_id):
 
 @app.route("/provider/<int:provider_id>/delete")
 def provider_delete(provider_id):
-      """Self-service delete. Provider (or you) can remove a listing by visiting
+         """Self-service delete. Provider (or you) can remove a listing by visiting
           /provider/<id>/delete?unlocked=<access_code> - the same code used for the dashboard."""
       provider = Provider.query.get_or_404(provider_id)
         unlocked = request.args.get("unlocked", "")
