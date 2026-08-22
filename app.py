@@ -499,7 +499,7 @@ def provider_delete(provider_id):
         provider = Provider.query.get_or_404(provider_id)
         unlocked = request.args.get("unlocked", "")
         admin_secret = os.environ.get("ADMIN_SECRET", "changeme")
-          if unlocked != provider.access_code and request.args.get("secret") != admin_secret:            return "Forbidden", 403
+        if unlocked != provider.access_code and request.args.get("secret") != admin_secret: return "Forbidden", 403
         db.session.delete(provider)
         db.session.commit()
         return redirect(url_for("home"))
