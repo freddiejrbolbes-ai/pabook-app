@@ -6,6 +6,7 @@ from models import db, Provider, Service, Booking, CATEGORIES, PACKAGE_TIERS
 from mailer import (send_booking_confirmation_to_customer,
                      send_new_booking_alert_to_provider,
                      send_provider_welcome_email)
+from sms import send_new_booking_sms_to_provider
 
 app = Flask(__name__)
 
@@ -130,6 +131,17 @@ def book(provider_id):
             booking_date=booking.booking_date,
             booking_time=booking.booking_time,
             notes=booking.notes,
+        )
+
+        # SMS alert to provider
+        send_new_booking_sms_to_provider(
+            provider_phone=provider.phone,
+            provider_name=provider.business_name,
+            customer_name=booking.customer_name,
+            customer_phone=booking.customer_phone,
+            service_name=service_name,
+            booking_date=booking.booking_date,
+            booking_time=booking.booking_time,
         )
 
         flash("Na-submit na ang booking mo! Maghihintay ka na lang ng SMS confirmation.", "success")
