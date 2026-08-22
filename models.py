@@ -11,6 +11,14 @@ CATEGORIES = [
     ("mekaniko", "Mekaniko / Auto Repair", "🔧"),
     ("nails", "Nail Salon", "💅"),
     ("trucking", "Transportation / Lipat-bahay", "🚚"),
+    ("paupahan", "Paupahan (Bahay/Apartment)", "🏠"),
+    ("renttoown", "Rent-to-Own", "🔑"),
+    ("laundry", "Laundry", "🧺"),
+    ("aircon", "Aircon Cleaning/Repair", "❄️"),
+    ("cleaning", "Cleaning Services", "🧹"),
+    ("catering", "Catering / Events", "🍽️"),
+    ("tutor", "Tutor", "📚"),
+    ("gadget", "Cellphone/Computer Repair", "📱"),
 ]
 
 PACKAGE_TIERS = {
