@@ -128,8 +128,8 @@
     {% endfor %}
   ];
 
-  const userLat = {{ user_lat | default('null') }};
-  const userLng = {{ user_lng | default('null') }};
+  const userLat = {{ user_lat | tojson }};
+  const userLng = {{ user_lng | tojson }};
 
   let map = null;
 
