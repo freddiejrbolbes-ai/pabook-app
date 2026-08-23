@@ -547,6 +547,11 @@ def provider_delete(provider_id):
         return redirect(url_for("home"))
 
 
+@app.route("/legal")
+def legal():
+    return render_template("legal.html")
+
+
 with app.app_context():
     db.create_all()
 
