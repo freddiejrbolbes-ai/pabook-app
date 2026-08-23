@@ -552,6 +552,23 @@ def legal():
     return render_template("legal.html")
 
 
+@app.route("/admin/export")
+def admin_export():
+    if request.args.get("secret") != os.environ.get("ADMIN_SECRET", "changeme"):
+        return "Forbidden", 403
+    def rows(model):
+        return [{c.name: getattr(r, c.name) for c in model.__table__.columns} for r in model.query.all()]
+    data = {
+        "exported_at": datetime.utcnow().isoformat(),
+        "providers": rows(Provider),
+        "services": rows(Service),
+        "bookings": rows(Booking),
+    }
+    resp = jsonify(data)
+    resp.headers["Content-Disposition"] = "attachment; filename=pabook-backup.json"
+    return resp
+
+
 with app.app_context():
     db.create_all()
 
