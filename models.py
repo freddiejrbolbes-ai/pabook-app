@@ -25,9 +25,9 @@ CATEGORIES = [
 ]
 
 PACKAGE_TIERS = {
-    "starter":  {"label": "Starter",  "monthly_fee": 300,  "setup_fee": 2500, "max_services": 10, "featured": False},
-    "standard": {"label": "Standard", "monthly_fee": 600,  "setup_fee": 4000, "max_services": 25, "featured": False},
-    "premium":  {"label": "Premium",  "monthly_fee": 1000, "setup_fee": 6000, "max_services": 999, "featured": True},
+    "starter":  {"label": "Libre",              "monthly_fee": 0, "setup_fee": 0, "max_services": 999, "featured": False},
+    "standard": {"label": "Libre + Suporta 💚",  "monthly_fee": 0, "setup_fee": 0, "max_services": 999, "featured": False},
+    "premium":  {"label": "Supporter (Salamat!)", "monthly_fee": 0, "setup_fee": 0, "max_services": 999, "featured": True},
 }
 
 
