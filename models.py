@@ -18,7 +18,10 @@ CATEGORIES = [
     ("cleaning", "Cleaning Services", "🧹"),
     ("catering", "Catering / Events", "🍽️"),
     ("tutor", "Tutor", "📚"),
-    ("gadget", "Cellphone/Computer Repair", "📱"),
+    ("gadget", "Cellphone/Computer Repair", "📱"),       
+    ("store", "Store / Retail / Wholesale", "🛒"),
+    ("plumbing", "Plumbing", "🔧"),
+    ("carpenter", "Carpenter / Kahoy", "🪚"),
 ]
 
 PACKAGE_TIERS = {
