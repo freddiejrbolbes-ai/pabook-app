@@ -5,23 +5,26 @@ import math
 db = SQLAlchemy()
 
 CATEGORIES = [
-    ("salon", "Salon", "💇"),
-    ("barber", "Barbershop", "💈"),
-    ("electrician", "Electrician", "🔌"),
-    ("mekaniko", "Mekaniko / Auto Repair", "🔧"),
-    ("nails", "Nail Salon", "💅"),
+    # ---- ITINAGO MUNA (i-uncomment kapag may provider na sa category na ito) ----
+    # ("salon", "Salon", "💇"),
+    # ("barber", "Barbershop", "💈"),
+    # ("electrician", "Electrician", "🔌"),
+    # ("mekaniko", "Mekaniko / Auto Repair", "🔧"),
+    # ("nails", "Nail Salon", "💅"),
+    # ---- AKTIBO NGAYON ----
     ("trucking", "Transportation / Lipat-bahay", "🚚"),
     ("paupahan", "Paupahan (Bahay/Apartment)", "🏠"),
-    ("renttoown", "Rent-to-Own", "🔑"),
-    ("laundry", "Laundry", "🧺"),
-    ("aircon", "Aircon Cleaning/Repair", "❄️"),
-    ("cleaning", "Cleaning Services", "🧹"),
-    ("catering", "Catering / Events", "🍽️"),
-    ("tutor", "Tutor", "📚"),
-    ("gadget", "Cellphone/Computer Repair", "📱"),       
-    ("store", "Store / Retail / Wholesale", "🛒"),
-    ("plumbing", "Plumbing", "🔧"),
-    ("carpenter", "Carpenter / Kahoy", "🪚"),
+    # ---- ITINAGO MUNA (i-uncomment kapag may provider na sa category na ito) ----
+    # ("renttoown", "Rent-to-Own", "🔑"),
+    # ("laundry", "Laundry", "🧺"),
+    # ("aircon", "Aircon Cleaning/Repair", "❄️"),
+    # ("cleaning", "Cleaning Services", "🧹"),
+    # ("catering", "Catering / Events", "🍽️"),
+    # ("tutor", "Tutor", "📚"),
+    # ("gadget", "Cellphone/Computer Repair", "📱"),
+    # ("store", "Store / Retail / Wholesale", "🛒"),
+    # ("plumbing", "Plumbing", "🔧"),
+    # ("carpenter", "Carpenter / Kahoy", "🪚"),
 ]
 
 PACKAGE_TIERS = {
